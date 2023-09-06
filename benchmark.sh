@@ -26,7 +26,7 @@ h264_1080p(){
 }
 
 h264_4k(){
-  ffmpeg -y -hide_banner -benchmark -report -c:v h264 -i /config/ribblehead_4k_h264.mp4 -c:a copy -c:v hevc_qsv -preset slow -global_quality 18 -look_ahead 1 -f null - 2>/dev/null
+  /usr/lib/jellyfin-ffmpeg/ffmpeg -y -hide_banner -benchmark -report -c:v h264 -i /config/ribblehead_4k_h264.mp4 -c:a copy -c:v hevc_qsv -preset slow -global_quality 18 -look_ahead 1 -f null - 2>/dev/null
 }
 
 hevc_8bit(){

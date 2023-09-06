@@ -16,8 +16,9 @@ cleanup(){
 
 start_container(){
 
-  if ! $(docker inspect jellyfin | jq -r '.[].State.Running'); then
-    docker run --rm -it -d --name jellyfin --device=/dev/dri:/dev/dri -v $(pwd):/config jellyfin/jellyfin
+  if ! $(docker inspect jellyfin >/dev/null 2>&1); then
+    docker pull jellyfin/jellyfin >/dev/null
+    docker run --rm -it -d --name jellyfin --device=/dev/dri:/dev/dri -v $(pwd):/config jellyfin/jellyfin >/dev/null
   fi
 
   sleep 5s
@@ -52,8 +53,8 @@ benchmarks(){
   echo ']' >> $1.json
 
   #Calculate average Wattage
-  total_watts=$(jq -r '.[]."power"."GPU"' $1.json | grep -Ev '^0' | paste -s -d + - | bc)
-  total_count=$(jq -r '.[]."power"."GPU"' $1.json | grep -Ev '^0' | wc -l)
+  total_watts=$(jq -r '.[]."power"."GPU"' $1.json 2>/dev/null | grep -Ev '^0' | paste -s -d + - | bc)
+  total_count=$(jq -r '.[]."power"."GPU"' $1.json 2>/dev/null | grep -Ev '^0' | wc -l)
   avg_watts=$(echo "scale=2; $total_watts / $total_count" | bc -l)
 
   for i in $(ls ffmpeg-*.log); do 
@@ -81,6 +82,16 @@ benchmarks(){
   quicksyncstats_arr+=("$cpu_model|$2|$bitrate|$total_time|$avg_fps|$avg_speed|$avg_watts")
 
   rm -rf $1.json
+
+  clear_vars
+
+}
+
+clear_vars(){
+
+ for i in total_watts total_count avg_watts total_fps fps_count avg_fps total_speed speed_count avg_speed bitrate total_time; do
+   unset $i
+ done
 
 }
 
