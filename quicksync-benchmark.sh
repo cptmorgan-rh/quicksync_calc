@@ -4,7 +4,7 @@ start(){
 
   cleanup
 
-  container
+  start_container
 
 }
 
@@ -14,7 +14,7 @@ cleanup(){
   rm -rf *.json
 }
 
-container(){
+start_container(){
 
   if ! $(docker inspect jellyfin | jq -r '.[].State.Running'); then
     docker run --rm -it -d --name jellyfin --device=/dev/dri:/dev/dri -v $(pwd):/config jellyfin/jellyfin
@@ -27,6 +27,15 @@ container(){
   else
     echo "Jellyfin container not running"
     exit 127
+  fi
+
+}
+
+stop_container(){
+
+  if $(docker inspect jellyfin | jq -r '.[].State.Running'); then
+    docker stop jellyfin > /dev/null
+    docker rmi jellyfin/jellyfin > /dev/null
   fi
 
 }
@@ -97,6 +106,8 @@ main(){
 
   #Unset Array
   unset quicksyncstats_arr
+
+  stop_container
 
 }
 
