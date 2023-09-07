@@ -4,7 +4,28 @@ start(){
 
   cleanup
 
+  dep_check
+
   start_container
+
+}
+
+dep_check(){
+
+  if ! which intel_gpu_top >/dev/null; then
+    echo "intel_gpu_top missing. Please install intel-gpu-tools"
+    exit 127
+  fi
+
+  if ! which printf >/dev/null; then
+    echo "printf missing. Please install printf"
+    exit 127
+  fi
+
+  if ! which docker >/dev/null; then
+    echo "Docker missing. Please install Docker"
+    exit 127
+  fi
 
 }
 
@@ -55,8 +76,8 @@ benchmarks(){
 
   for i in $(ls ffmpeg-*.log); do
     #Calculate average FPS
-    total_fps=$(grep -Eo 'fps= [1-9].' $i | sed -e 's/fps= //' | paste -s -d + - | bc)
-    fps_count=$(grep -Eo 'fps= [1-9].' $i | wc -l)
+    total_fps=$(grep -Eo 'fps=.[1-9][1-9].' $i | sed -e 's/fps=//' | paste -s -d + - | bc)
+    fps_count=$(grep -Eo 'fps=.[1-9][1-9].' $i | wc -l)
     avg_fps=$(echo "scale=2; $total_fps / $fps_count" | bc -l)
 
     #Calculate average speed
@@ -72,7 +93,7 @@ benchmarks(){
 
     #delete log file
     rm -rf $i
-    rm -rf $i.output
+    rm -rf $1.output
   done
 
   #Add data to array
