@@ -98,6 +98,8 @@ main(){
   #Collections CPU Model
   cpu_model=$(cat /proc/cpuinfo | grep -m1 'model name' | awk '{ print $6 }')
 
+  benchmarks h264_1080p_cpu ribblehead_1080p_h264
+
   benchmarks h264_1080p ribblehead_1080p_h264
 
   benchmarks h264_4k ribblehead_4k_h264
