@@ -11,7 +11,7 @@ start(){
 cleanup(){
   #Delete any previous report file
   rm -rf ffmpeg*.log
-  rm -rf *.json
+  rm -rf *.output
 }
 
 start_container(){
@@ -43,21 +43,17 @@ stop_container(){
 
 benchmarks(){
 
-  intel_gpu_top -s 100ms -J -o $1.json &
+  intel_gpu_top -s 100ms -l -o $1.output &
   igtpid=$(echo $!)
   docker exec -it jellyfin /config/benchmark.sh $1
   kill -s SIGINT $igtpid
 
-  #Add brackets to beginning and end of json output to make valid json
-  sed -i '1s/^/[/' $1.json
-  echo ']' >> $1.json
-
   #Calculate average Wattage
-  total_watts=$(jq -r '.[]."power"."GPU"' $1.json 2>/dev/null | grep -Ev '^0' | paste -s -d + - | bc)
-  total_count=$(jq -r '.[]."power"."GPU"' $1.json 2>/dev/null | grep -Ev '^0' | wc -l)
+  total_watts=$(awk '{ print $5 }' $1.output | grep -Ev '^0|Power|gpu' | paste -s -d + - | bc)
+  total_count=$(awk '{ print $5 }' $1.output | grep -Ev '^0|Power|gpu' | wc -l)
   avg_watts=$(echo "scale=2; $total_watts / $total_count" | bc -l)
 
-  for i in $(ls ffmpeg-*.log); do 
+  for i in $(ls ffmpeg-*.log); do
     #Calculate average FPS
     total_fps=$(grep -Eo 'fps= [1-9].' $i | sed -e 's/fps= //' | paste -s -d + - | bc)
     fps_count=$(grep -Eo 'fps= [1-9].' $i | wc -l)
@@ -76,12 +72,11 @@ benchmarks(){
 
     #delete log file
     rm -rf $i
+    rm -rf $i.output
   done
 
   #Add data to array
   quicksyncstats_arr+=("$cpu_model|$2|$bitrate|$total_time|$avg_fps|$avg_speed|$avg_watts")
-
-  rm -rf $1.json
 
   clear_vars
 
