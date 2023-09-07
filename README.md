@@ -1,7 +1,7 @@
 Runs a ffmpeg benchmark to get Avergage Speed, FPS, and Watts
 ===========================================
 
-Requires Docker, Intel CPU w/ QuickSync, jq, and intel-gpu-tools package
+Requires Docker, Intel CPU w/ QuickSync, printf, and intel-gpu-tools package
 
 This should be run as root with no other applications/containers running that would utilize quicksync. This includes DEs.
 
@@ -9,7 +9,7 @@ This should be run as root with no other applications/containers running that wo
 HOW TO USE
 ------------
 
-Ensure Docker is installed and running, you have an Intel CPU w/ QuickSync, you have jq installed `which jq`, you have intel-gpu-tools installed `which intel_gpu_top`, and you are running as root.
+Ensure Docker is installed and running, you have an Intel CPU w/ QuickSync, you have printf installed `which printf`, you have intel-gpu-tools installed `which intel_gpu_top`, and you are running as root.
 
 Clone this repo.
 
