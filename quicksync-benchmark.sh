@@ -44,10 +44,10 @@ start_container(){
 
   sleep 5s
 
-  if $(docker inspect jellyfin | jq -r '.[].State.Running'); then
+  if $(docker inspect jellyfin-qsvtest | jq -r '.[].State.Running'); then
     main
   else
-    echo "Jellyfin container not running"
+    echo "Jellyfin QSV test container not running"
     exit 127
   fi
 
@@ -55,8 +55,8 @@ start_container(){
 
 stop_container(){
 
-  if $(docker inspect jellyfin | jq -r '.[].State.Running'); then
-    docker stop jellyfin > /dev/null
+  if $(docker inspect jellyfin-qsvtest | jq -r '.[].State.Running'); then
+    docker stop jellyfin-qsvtest > /dev/null
     docker rmi jellyfin/jellyfin > /dev/null
   fi
 
@@ -66,7 +66,7 @@ benchmarks(){
 
   intel_gpu_top -s 100ms -l -o $1.output &
   igtpid=$(echo $!)
-  docker exec -it jellyfin /config/benchmark.sh $1
+  docker exec -it jellyfin-qsvtest /config/benchmark.sh $1
   kill -s SIGINT $igtpid
 
   #Calculate average Wattage
