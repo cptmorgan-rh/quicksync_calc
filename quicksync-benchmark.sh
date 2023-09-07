@@ -76,7 +76,7 @@ benchmarks(){
   done
 
   #Add data to array
-  quicksyncstats_arr+=("$cpu_model|$2|$bitrate|$total_time|$avg_fps|$avg_speed|$avg_watts")
+  quicksyncstats_arr+=("$cpu_model|$1|$bitrate|$total_time|$avg_fps|$avg_speed|$avg_watts")
 
   clear_vars
 
@@ -93,7 +93,7 @@ clear_vars(){
 main(){
 
   #Sets Array
-  quicksyncstats_arr=("CPU|FILE|BITRATE|TIME|AVG_FPS|AVG_SPEED|AVG_WATTS")
+  quicksyncstats_arr=("CPU|TEST|BITRATE|TIME|AVG_FPS|AVG_SPEED|AVG_WATTS")
 
   #Collections CPU Model
   cpu_model=$(cat /proc/cpuinfo | grep -m1 'model name' | awk '{ print $6 }')
