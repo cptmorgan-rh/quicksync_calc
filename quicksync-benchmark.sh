@@ -70,9 +70,13 @@ benchmarks(){
   kill -s SIGINT $igtpid
 
   #Calculate average Wattage
-  total_watts=$(awk '{ print $5 }' $1.output | grep -Ev '^0|Power|gpu' | paste -s -d + - | bc)
-  total_count=$(awk '{ print $5 }' $1.output | grep -Ev '^0|Power|gpu' | wc -l)
-  avg_watts=$(echo "scale=2; $total_watts / $total_count" | bc -l)
+  if [ $1 != "h264_1080p_cpu" ]; then
+    total_watts=$(awk '{ print $5 }' $1.output | grep -Ev '^0|Power|gpu' | paste -s -d + - | bc)
+    total_count=$(awk '{ print $5 }' $1.output | grep -Ev '^0|Power|gpu' | wc -l)
+    avg_watts=$(echo "scale=2; $total_watts / $total_count" | bc -l)
+  else
+    avg_watts="N/A"
+  fi
 
   for i in $(ls ffmpeg-*.log); do
     #Calculate average FPS
