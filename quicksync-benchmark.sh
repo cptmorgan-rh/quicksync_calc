@@ -49,7 +49,7 @@ benchmarks(){
   kill -s SIGINT $igtpid
 
   #Add brackets to beginning and end of json output to make valid json
-  sed -i '1s/^/[\n/' $1.json
+  sed -i '1s/^/[/' $1.json
   echo ']' >> $1.json
 
   #Calculate average Wattage
