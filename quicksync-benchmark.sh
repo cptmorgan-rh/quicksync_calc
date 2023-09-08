@@ -120,8 +120,12 @@ main(){
   #Sets Array
   quicksyncstats_arr=("CPU|TEST|FILE|BITRATE|TIME|AVG_FPS|AVG_SPEED|AVG_WATTS")
 
-  #Collections CPU Model
-  cpu_model=$(cat /proc/cpuinfo | grep -m1 'model name' | awk '{ print $6 }')
+  #Collects CPU Model
+  if $(grep -m1 'model name' /proc/cpuinfo | grep -E '13th'); then
+    cpu_model=$(grep -m1 'model name' /proc/cpuinfo | awk '{ print $NF }')
+  else
+    cpu_model=$(grep -m1 'model name' /proc/cpuinfo | awk '{ print $6 }')
+  fi
 
   benchmarks h264_1080p_cpu ribblehead_1080p_h264
 
